@@ -1,4 +1,19 @@
 .OrderDetails{
-    width: 49%;
+    width: 40%;
     display: inline-block;
+    border: 1px solid black;
+    margin-top: 10px;
+}
+
+.OrderDetails div {
+    margin: 30px;
+}
+
+.OrderDetails span{
+    margin: 10px;
+}
+
+.Message {
+    font-size: 20px;
+    margin-top: 50%;
 }

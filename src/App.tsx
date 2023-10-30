@@ -1,89 +1,42 @@
-import React, {useState} from 'react';
-import Hamburger from './assets/Hamburger.jpeg'
-import Cheeseburger from './assets/Cheeseburger.jpeg'
-import Free from './assets/Free.jpeg'
-import Tea from'./assets/Tea.jpeg'
-import Cola from './assets/Cola.jpeg'
-import Coffee from './assets/Cofee.jpeg'
-import  './App.css';
+import React, { useState } from 'react';
+import './App.css';
 import AddItems from "./components/AddItems/AddItems";
 import OrderDetails from "./components/OrderDetails/OrderDetails";
+import { ProductType } from './types';
 
 function App() {
+    const [price, setPrice] = useState(0);
+    const [selected, setSelected] = useState<ProductType[]>([]);
 
-    const MenuTwo: {name: string, prise: number}[] = [
-        {name: 'llk' , prise: 78}
-    ]
-
-    const Menu = [
-        {name:'Hamburger' , prise: 50 , card: Hamburger},
-        {name: 'Cheeseburger' , prise: 70 , card: Cheeseburger},
-        {name: 'Free' , prise: 100 , card: Free},
-        {name:'Coffee' , prise: 15, card: Coffee},
-        {name:'Cola' , prise: 75 , card: Cola},
-        {name: 'Tea' , prise: 20, card: Tea}
-    ]
-
-
-    const [Dishes, setDishes] = useState([
-        {name: 'Hamburger' , count: 0},
-        {name: 'Cheeseburger' , count: 0},
-        {name: 'Free', count: 0},
-        {name: 'Coffee' , count: 0},
-        {name: 'Cola', count: 0},
-        {name: 'Tea' , count: 0}
-    ])
-
-    let MenuList: React.ReactNode = null;
-    let DishesList: React.ReactNode = null;
-
-    const deleteDish = (index: number) => {
-        MenuTwo.splice(index , 1)
+    const newProduct = (product: ProductType) => {
+        const index = selected.findIndex(el => el.product === product.product);
+        if (index === -1) {
+            setSelected(prev => [...prev, product]);
+            setPrice(prev => prev = prev + product.price)
+        } else {
+            setPrice(prev => prev = prev + product.price)
+            setSelected(prev => {
+                const newPrev = [...prev];
+                newPrev[index].quantity++;
+                newPrev[index].price = product.price * newPrev[index].quantity
+                return newPrev;
+            })
+        }
     }
 
-
-    const countNumber = (name: string , prise: number) => {
-        const newDishes = {name: name , prise: prise}
-
-        setDishes(prev => prev.map(dish => {
-            if(dish.count < 1){
-                MenuTwo.push(newDishes)
-            }
-            if(dish.name === name){
-                return {
-                    ...dish,
-                    count: dish.count + 1
-                }
-            }
-            return  dish
-        }))
-
-        DishesList = MenuTwo.map((dish , index) => (
-            Dishes.map((list , index) => (
-                <div>
-                    <span> {dish.name} </span>
-                    <span>{Dishes[index].count} </span>
-                    <span>{dish.prise} </span>
-                    <button onClick={() => deleteDish(index)}>add</button>
-                </div>
-            ))
-        ))
+    const deleteProduct = (product: ProductType) => {
+        setPrice(prev => prev - selected[selected.indexOf(product)].price)
+        setSelected(prev => {
+            const newPrev = [...prev];
+            newPrev.splice(newPrev.indexOf(product), 1);
+            return newPrev;
+        })
     }
-
-
-
-    MenuList = Menu.map((Dish , index) => (
-        <div className='Dish' key={index} onClick={() => countNumber(Dish.name , Dish.prise)}>
-            <div><img src={Dish.card}/></div>
-            <span>{Dish.name}</span>
-            <div>Prise:{Dish.prise}</div>
-        </div>
-    ))
 
     return (
         <div className="App">
-            {DishesList}
-            <AddItems MenuList={MenuList}/>
+            <OrderDetails price={price} deleteProduct={deleteProduct} selected={selected} />
+            <AddItems newProduct={newProduct} />
         </div>
     );
 }

@@ -6,17 +6,3 @@
     justify-content: space-between;
 }
 
-.Dish{
-    width: 40%;
-    border: 1px solid black;
-    border-radius: 3px;
-    margin: 10px;
-    padding: 10px;
-}
-
-.Dish img{
-    width: 100px;
-    height: 100px;
-    border-radius: 10px;
-}
-
